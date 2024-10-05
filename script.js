@@ -16,9 +16,8 @@ function showPosition(position) {
     document.getElementById('lon').textContent = lon;
     document.getElementById('locationDetails').style.display = 'block';
 
-    // Show map with iframe
-    const apiKey = 'YOUR_GOOGLE_MAPS_API_KEY'; // Replace with your Google Maps API key
-    const mapSrc = `https://www.google.com/maps/embed/v1/view?key=${apiKey}&center=${lat},${lon}&zoom=15&markers=${lat},${lon}`;
+    // Show map with iframe (using OpenStreetMap instead)
+    const mapSrc = `https://www.openstreetmap.org/export/embed.html?bbox=${lon-0.01},${lat-0.01},${lon+0.01},${lat+0.01}&layer=mapnik&marker=${lat},${lon}`;
     document.getElementById('map').src = mapSrc; // Set the src attribute of the iframe
     document.getElementById('map').style.display = 'block'; // Make iframe visible
 
@@ -47,10 +46,10 @@ function showError(error) {
     }
 }
 
-// Fetch weather data using OpenWeatherMap One Call API?
+// Fetch weather data using Open-Meteo
 function fetchWeatherData(lat, lon) {
-    
-    const apiUrl = `https://api.open-meteo.com/v1/forecast?latitude=22&longitude=79&hourly=temperature_2m&timezone=auto`;    
+    // Use Open-Meteo's free API without an API key
+    const apiUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
 
     fetch(apiUrl)
         .then(response => response.json())
@@ -62,18 +61,17 @@ function fetchWeatherData(lat, lon) {
         });
 }
 
-
 function displayWeatherData(data) {
-    const weather = data.current;
+    const weather = data.current_weather; // Updated to match Open-Meteo's response format
 
     document.getElementById('location').textContent = "Your Location"; 
-    document.getElementById('windSpeed').textContent = `${weather.wind_speed} km/h`;
-    document.getElementById('humidity').textContent = `${weather.humidity}%`;
+    document.getElementById('windSpeed').textContent = `${weather.windspeed} km/h`;
+    document.getElementById('humidity').textContent = `${weather.humidity || 'N/A'}%`; // Humidity might not be available
     document.getElementById('timezone').textContent = data.timezone;
-    document.getElementById('pressure').textContent = `${weather.pressure} hPa`;
-    document.getElementById('windDirection').textContent = getWindDirection(weather.wind_deg);
-    document.getElementById('uvIndex').textContent = weather.uvi;
-    document.getElementById('feelsLike').textContent = `${weather.feels_like}°C`;
+    document.getElementById('pressure').textContent = `${weather.pressure} hPa`; // If available
+    document.getElementById('windDirection').textContent = getWindDirection(weather.winddirection || 0);
+    document.getElementById('uvIndex').textContent = weather.uv_index || 'N/A'; // UV index might not be available
+    document.getElementById('feelsLike').textContent = `${weather.apparent_temperature || 'N/A'}°C`; // Feels like might not be available
 
     document.getElementById('weatherData').style.display = 'block';
 }
