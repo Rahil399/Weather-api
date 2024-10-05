@@ -49,8 +49,8 @@ function showError(error) {
 
 // Fetch weather data using OpenWeatherMap One Call API?
 function fetchWeatherData(lat, lon) {
-    const apiKey = 'YOUR_OPENWEATHERMAP_API_KEY'; 
-    const apiUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly,daily&appid=${apiKey}&units=metric`;
+    
+    const apiUrl = `https://api.open-meteo.com/v1/forecast?latitude=22&longitude=79&hourly=temperature_2m&timezone=auto`;    
 
     fetch(apiUrl)
         .then(response => response.json())
